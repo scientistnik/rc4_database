@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
+#include "rc4.h"
 
 #define DATABASE_NAME "database.db"
 
@@ -22,14 +23,26 @@ void list_init(FILE* output)
     f = fopen(DATABASE_NAME,"rb");
   }
 
-  int count = 0;
   Student_t *buf = malloc(sizeof(Student_t));
-  while( (count = fread(buf,sizeof(Student_t),1,f) == sizeof(Student_t))) {
-    fprintf(fout, "Read node...\n");
-    add_to_list((Student_t *) buf);
-    buf = malloc(sizeof(Student_t));
-  }
-  free(buf);
+	rc4_init();
+
+	while (fgets(buf->fio,255,f) != NULL) {
+		rc4_crypt(( char*)buf->fio,strlen(buf->fio));
+		fgets(buf->direct,255,f);
+		rc4_crypt(( char*)buf->direct,strlen(buf->direct));
+		fgets(buf->group,255,f);
+		rc4_crypt(( char*)buf->group,strlen(buf->group));
+		fgets(&(buf->form),255,f);
+		rc4_crypt(( char*)&(buf->group),1);
+		fgets(&(buf->money),255,f);
+		rc4_crypt(( char*)&(buf->money),1);
+		fgets(&(buf->house),255,f);
+		rc4_crypt(( char*)&(buf->house),1);
+
+		add_to_list(buf);
+  	buf = malloc(sizeof(Student_t));
+	}
+	free(buf);
 
   fclose(f);
 }
@@ -62,9 +75,30 @@ void save_list()
     fprintf(fout,"Error open database-file!\n");
     return;
   }
+	rc4_reset();
+	rc4_init();
 
   do {
-    fwrite(s,sizeof(Student_t),1,f);
+		char ch = '\n';
+		rc4_crypt((char *)s->fio,strlen(s->fio));
+		fwrite(s->fio,sizeof(s->fio),1,f);
+		fwrite(&ch,sizeof(ch),1,f);
+		rc4_crypt((char *)s->direct,strlen(s->direct));
+		fwrite(s->direct,sizeof(s->direct),1,f);
+		fwrite(&ch,sizeof(ch),1,f);
+		rc4_crypt((char *)s->group,strlen(s->group));
+		fwrite(s->group,sizeof(s->group),1,f);
+		fwrite(&ch,sizeof(ch),1,f);
+		rc4_crypt((char *)&(s->form),1);
+		fwrite(&(s->form),sizeof(s->form),1,f);
+		fwrite(&ch,sizeof(ch),1,f);
+		rc4_crypt((char *)&(s->money),1);
+		fwrite(&(s->money),sizeof(s->money),1,f);
+		fwrite(&ch,sizeof(ch),1,f);
+		rc4_crypt((char *)&(s->house),1);
+		fwrite(&(s->house),sizeof(s->house),1,f);
+		fwrite(&ch,sizeof(ch),1,f);
+
     s = s->next;
   } while(s != head);
 }
