@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1496852874 source:e:\workspace\temp\db\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"list.h"
+
+1496851540 e:\workspace\temp\db\list.h
+
+1496833213 source:e:\workspace\temp\db\list.c
+	<stdlib.h>
+	<stdio.h>
+	"list.h"
+
