@@ -174,7 +174,7 @@ Actions_t input_choice()
 int main(int argc, char **argv)
 {
 		Actions_t choice = MENU;
-		FILE *fout1 = stdout;
+		fout = stdout;
 
 		for (int i = 1; i < argc; i++) {
 			if ((strcmp(argv[i],"-h") == 0) ||

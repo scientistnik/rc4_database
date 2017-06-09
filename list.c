@@ -199,7 +199,7 @@ Student_t* find_by_direct(char *direct, Student_t *h)
 
 Student_t* find_by_form(char form, Student_t *h)
 {
-	Student_t *cur
+	Student_t *cur;
 
 	if (h == NULL)
 		cur = head;
@@ -236,7 +236,7 @@ Student_t* find_by_house(char house, Student_t *h)
 	Student_t *cur;
 
 	if (h == NULL)
-		cur = head
+		cur = head;
 
 	fprintf(fout,"Find by House...\n");
 	while (cur->house == house) {
