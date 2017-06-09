@@ -19,34 +19,13 @@ extern Student_t *head;
 void list_init(FILE*);
 void add_to_list(Student_t *new);
 void save_list();
-//void create_student();
-/*
-struct lnode;
+void delete_from_list(Student_t *del);
+int student_eq(const Student_t *a, const Student_t *b);
+Student_t* find_by_fio(char *fio, Student_t *h);
+Student_t* find_by_direct(char *direct, Student_t *h);
+Student_t* find_by_group(char *group, Student_t *h);
+Student_t* find_by_form(char form, Student_t *h);
+Student_t* find_by_money(char money, Student_t *h);
+Student_t* find_by_house(char house, Student_t *h);
 
-typedef struct llist
-{
-  struct lnode* head;
-  unsigned int size;
-} list;
-
-typedef void (*list_op)(void*);
-typedef int (*list_pred)(const void*);
-typedef int (*equal_op)(const void*, const void*);
-list* create_list(void);
-void push_front(list* llist, void* data);
-void push_back(list* llist, void* data);
-int remove_front(list* llist, list_op free_func);
-int remove_index(list* llist, int index, list_op free_func);
-int remove_back(list* llist, list_op free_func);
-int remove_data(list* llist, const void* data, equal_op compare_func, list_op free_func);
-int remove_if(list* llist, list_pred pred_func, list_op free_func);
-void* front(list* llist);
-void* back(list* llist);
-void* get_index(list* llist, int index);
-int is_empty(list* llist);
-int size(list* llist);
-int find_occurrence(list* llist, const void* search, equal_op compare_func);
-void empty_list(list* llist, list_op free_func);
-void traverse(list* llist, list_op do_func);
-*/
 #endif

@@ -18,6 +18,7 @@ void list_init(FILE* output)
   fprintf(fout,"Try open database...\n");
   if ( (f = fopen(DATABASE_NAME,"rb")) == NULL)
   {
+		fprintf(fout,"Database not found!!!\n Create new database...\n");
     f = fopen(DATABASE_NAME,"wb");
     fclose(f);
     f = fopen(DATABASE_NAME,"rb");
@@ -26,6 +27,7 @@ void list_init(FILE* output)
   Student_t *buf = malloc(sizeof(Student_t));
 	rc4_init();
 
+	fprintf(fout,"Read data from file database.db\n");
 	while (fgets(buf->fio,255,f) != NULL) {
 		rc4_crypt(( char*)buf->fio,strlen(buf->fio));
 		fgets(buf->direct,255,f);
@@ -50,17 +52,42 @@ void list_init(FILE* output)
 void add_to_list(Student_t *new)
 {
   if (head == NULL) {
-    fprintf(fout,"Add first node...");
+    fprintf(fout,"Add first node...\n");
     head = new;
     head->next = head;
     head->prev = head;
   } else {
-    fprintf(fout,"Add next node...");
+    fprintf(fout,"Add next node...\n");
     new->prev = head->prev;
     new->next = head;
     head->prev = new;
     new->prev->next = new;
   }
+}
+
+void delete_from_list(Student_t *del)
+{
+	Student_t *std = head;
+
+	if (head == NULL || del == NULL)
+		return;
+
+	while (std != del){
+		std = std->next;
+		if (std == head)
+			return;
+	}
+
+	fprintf(fout,"Delete element from database....\n");
+	if (std->next == std->prev) {
+		fprintf(fout,"Database empty....\n");
+		free(head);
+		head = NULL;
+	} else {
+		std->next->prev = std->prev;
+		std->prev->next = std->next;
+		free(std);
+	}
 }
 
 void save_list()
@@ -78,6 +105,7 @@ void save_list()
 	rc4_reset();
 	rc4_init();
 
+	fprintf(fout,"Save list to database.db file....\n");
   do {
 		char ch = '\n';
 		rc4_crypt((char *)s->fio,strlen(s->fio));
@@ -103,371 +131,119 @@ void save_list()
   } while(s != head);
 }
 
-/*
-Student* create_student(const char* first_name, const char* last_name, int grade, unsigned int gtid)
+int student_eq(const Student_t *a, const Student_t *b)
 {
-  Student *s = malloc(sizeof(Student));
+	if (strlen(a->fio) != strlen(b->fio) ||
+			strlen(a->direct) != strlen(b->direct) ||
+			strlen(a->group) != strlen(b->group))
+			return 0;
 
-  char *f = malloc((strlen(first_name)+1)*sizeof(char));
-  char *l = malloc((strlen(last_name)+1)*sizeof(char));
-
-  strncpy(f, first_name, strlen(first_name)+1);
-  strncpy(l, last_name, strlen(last_name)+1);
-
-  s->first_name = f;
-  s->last_name = l;
-  s->grade = grade;
-  s->gtid = gtid;
-
-  return s;
-}
-
-void print_student(void* data)
-{
-  Student *s = data;
-  printf("Студент: %s %s\n", s->first_name, s->last_name);
-  printf("Группа: %d\n", s->grade);
-  printf("ИД: %d\n", s->gtid);
-}
-
-void free_student(void* data)
-{
-  Student *s = data;
-
-  free(s->first_name);
-  free(s->last_name);
-
-  free(s);
-}
-
-int student_eq(const void* a, const void* b)
-{
-  const Student *s1 = a;
-  const Student *s2 = b;
-
-  if (!strncmp(s1->first_name, s2->first_name, strlen(s1->first_name)) &&
-      !strncmp(s2->last_name,  s2->last_name,  strlen(s1->last_name)) &&
-      s1->grade == s2->grade &&
-      s1->gtid == s2->gtid) {
+	if 	(!strcmp(a->fio,b->fio) && !strcmp(a->direct,b->direct) && !strcmp(a->group,b->group) &&
+				a->form == b->form && a->money == b->money && a->house == b->house) {
     return 1;
   } else {
     return 0;
   }
 }
 
-int student_failing(const void* a) {
-  const Student *s = a;
-  if (s->grade < 60) return 1;
-  return 0;
+Student_t* find_by_fio(char *fio, Student_t *h)
+{
+	Student_t *cur;
+	
+	if (h == NULL)
+		cur = head;
+	
+	fprintf(fout,"Find by fio...\n");
+	while (strstr(cur->fio, fio) == NULL) {
+		cur = cur->next;
+		if (cur == head)
+			return NULL;
+	}
+
+	return cur;
 }
 
-typedef struct lnode
+Student_t* find_by_group(char *group, Student_t *h)
 {
-  struct lnode* prev;
-  struct lnode* next;
-  void* data;
-} node;
+	Student_t *cur;
 
-static node* create_node(void* data);
+	if (h == NULL)
+		cur = head;
 
-list* create_list(void)
-{
-  list *l = malloc(sizeof(list));
-  l->head = NULL;
-  l->size = 0;
-  return l;
+	fprintf(fout,"Find by Group...\n");
+	while (strstr(cur->group, group) == NULL) {
+		cur = cur->next;
+		if (cur == head)
+			return NULL;
+	}
+
+	return cur;
 }
 
-static node* create_node(void* data)
+Student_t* find_by_direct(char *direct, Student_t *h)
 {
-  node *n = malloc(sizeof(node));
-  n->data = data;
-  n->prev = NULL;
-  n->next = NULL;
-  return n;
+	Student_t *cur;
+
+	if (h == NULL)
+		cur = head;
+
+	fprintf(fout,"Find by Direct...\n");
+	while (strstr(cur->direct, direct) == NULL) {
+		cur = cur->next;
+		if (cur == head)
+			return NULL;
+	}
+
+	return cur;
 }
 
-void push_front(list* llist, void* data)
+Student_t* find_by_form(char form, Student_t *h)
 {
-  node *n = create_node(data);
+	Student_t *cur
 
-  if (!llist->size) {
-    n->next = n;
-    n->prev = n;
-  } else {
-    node *head = llist->head;
-    node *prev = head->prev;
+	if (h == NULL)
+		cur = head;
 
-    n->next = head;
-    n->prev = head->prev;
+	fprintf(fout,"Find by Form...\n");
+	while (cur->form == form) {
+		cur = cur->next;
+		if (cur == head)
+			return NULL;
+	}
 
-    head->prev = n;
-    prev->next = n;
-  }
-
-  llist->head = n;
-  llist->size++;
+	return cur;
 }
 
-void push_back(list* llist, void* data)
+Student_t* find_by_money(char money, Student_t *h)
 {
-  node *n = create_node(data);
+	Student_t *cur;
 
-  if (!llist->size) {
-    n->next = n;
-    n->prev = n;
-    llist->head = n;
-  } else {
-    node *head = llist->head;
-    node *prev = head->prev;
-    n->next = head;
-    n->prev = head->prev;
+	if (h == NULL)
+		cur = head;
 
-    head->prev = n;
-    prev->next = n;
-  }
-  llist->size++;
+	fprintf(fout,"Find by Money...\n");
+	while (cur->money == money) {
+		cur = cur->next;
+		if (cur == head)
+			return NULL;
+	}
+
+	return cur;
 }
 
-int remove_front(list* llist, list_op free_func)
+Student_t* find_by_house(char house, Student_t *h)
 {
-  if (!llist->size) return -1;
+	Student_t *cur;
 
-  node *head = llist->head;
+	if (h == NULL)
+		cur = head
 
-  if (llist->size == 1) {
-    llist->head = NULL;
-  } else {
-    node *next = head->next;
-    node *prev = head->prev;
+	fprintf(fout,"Find by House...\n");
+	while (cur->house == house) {
+		cur = cur->next;
+		if (cur == head)
+			return NULL;
+	}
 
-    llist->head = next;
-
-    next->prev = prev;
-    prev->next = next;
-  }
-
-  free_func(head->data);
-  free(head);
-
-  llist->size--;
-
-  return 0;
+	return cur;
 }
-
-int remove_index(list* llist, int index, list_op free_func)
-{
-  if (!llist->size) return -1;
-
-  node *current = llist->head;
-
-  for (int i=0; i<index; i++) {
-    current = current->next;
-  }
-
-  if (llist->size == 1) {
-    llist->head = NULL;
-  } else {
-    node *next = current->next;
-    node *prev = current->prev;
-
-    prev->next = next;
-    next->prev = prev;
-  }
-
-  free_func(current->data);
-  free(current);
-
-  llist->size--;
-
-  return 0;
-}
-
-int remove_back(list* llist, list_op free_func)
-{
-  if (!llist->size) return -1;
-
-  node *head = llist->head;
-  node *tbr = head->prev;
-  node *nb = tbr->prev;
-
-  if (llist->size == 1) {
-    llist->head = NULL;
-  } else {
-    head->prev = nb;
-    nb->next = head;
-  }
-
-  free_func(tbr->data);
-  free(tbr);
-
-  llist->size--;
-
-  return 0;
-}
-
-int remove_data(list* llist, const void* data, equal_op compare_func, list_op free_func)
-{
-  int removed = 0;
-
-  if (!llist->size) return removed;
-
-  node *current = llist->head;
-  node *next = current->next;
-  node *prev = current->prev;
-  int is_head = 1;
-
-  for (int i=0; i<llist->size; i++) {
-    if (compare_func(data, current->data)) {
-      if (is_head) llist->head = next;
-      next->prev = prev;
-      prev->next = next;
-      free_func(current->data);
-      free(current);
-      current = next;
-
-      removed++;
-    } else {
-      is_head = 0;
-      current = current->next;
-    }
-
-    if (llist->size > 1) {
-      next = current->next;
-      prev = current->prev;
-    }
-  }
-
-  llist->size-=removed;
-
-  if (!llist->size) llist->head = NULL;
-
-  return removed;
-}
-
-int remove_if(list* llist, list_pred pred_func, list_op free_func)
-{
-  if (!llist->size) return 0;
-
-  int removed = 0;
-  node *current = llist->head;
-  node *next = current->next;
-  node *prev = current->prev;
-  int is_head = 1;
-
-  for (int i=0; i<llist->size; i++) {
-    if (pred_func(current->data)) {
-      if (is_head) llist->head = next;
-
-      next->prev = prev;
-      prev->next = next;
-
-      free_func(current->data);
-      free(current);
-
-      current = next;
-
-      removed++;
-    } else {
-      is_head = 0;
-
-      current = current->next;
-    }
-
-    if (llist->size > 0) {
-      next = current->next;
-      prev = current->prev;
-    }
-  }
-
-  llist->size-=removed;
-
-  if (!llist->size) llist->head = NULL;
-
-  return removed;
-}
-
-void* front(list* llist)
-{
-  if (llist->size) {
-    return llist->head->data;
-  } else {
-    return NULL;
-  }
-}
-
-void* get_index(list* llist, int index)
-{
-  if (!llist->size || index >= llist->size) {
-    return NULL;
-  }
-
-  node *current = llist->head;
-  for (int i=0; i<index; i++) {
-    current = current->next;
-  }
-
-  return current->data;
-}
-
-void* back(list* llist)
-{
-  if (!llist->size) return NULL;
-
-  node *end = llist->head->prev;
-  return end->data;
-}
-
-int is_empty(list* llist)
-{
-  if (llist->size == 0 && llist->head == NULL) {
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
-int size(list* llist)
-{
-  return llist->size;
-}
-
-int find_occurrence(list* llist, const void* search, equal_op compare_func)
-{
-  node *current = llist->head;
-  for (int i=0; i<llist->size; i++) {
-    if (compare_func(search, current->data)) return 1;
-    current = current->next;
-  }
-
-  return 0;
-}
-
-void empty_list(list* llist, list_op free_func)
-{
-  if (!llist->size) return;
-
-  node *current = llist->head;
-  node *next = current->next;
-
-  for (int i=0; i<llist->size; i++) {
-    free_func(current->data);
-    free(current);
-    current = next;
-
-    if (i < llist->size-1) next = current->next;
-  }
-
-  llist->head=NULL;
-  llist->size=0;
-}
-
-void traverse(list* llist, list_op do_func)
-{
-  node *current = llist->head;
-  for (int i=0; i<llist->size; i++) {
-    do_func(current->data);
-    current = current->next;
-  }
-}
-*/
