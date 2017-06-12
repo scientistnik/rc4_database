@@ -99,20 +99,20 @@ void view_one()
 		printf("Form: \t\t%c\n",c->form);
 		printf("Money: \t\t%c\n",c->money);
 		printf("House: \t\t%c\n",c->house);
-		
+
 		printf("\n1. Следующий\n");
 		printf("2. Предыдущий\n");
 		printf("3. Удалить\n");
-		printf("%d. Выход в Меню\n",MENU);
+		printf("%d. Выход в Меню\n",EXIT);
 		printf("Your choice: ");
 		choice = input_choice();
 
 		switch(choice) {
 			case 1: c = c->next; break;
 			case 2: c = c->prev; break;
-			case 3: 
-				c = c->next; 
-				delete_from_list(c->prev); 
+			case 3:
+				c = c->next;
+				delete_from_list(c->prev);
 				break;
 			default: break;
 		}
@@ -202,6 +202,7 @@ int main(int argc, char **argv)
             //test();
             break;
 				case VIEW: view_all(); break;
+				case DELETE:
 				case VIEW_ONE: view_one(); break;
 				case FOUND: found(); break;
 				case ADD:	create_student();	break;

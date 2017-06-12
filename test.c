@@ -47,7 +47,7 @@ void test()
         printf("\n");
 
         remove_back(llist, free_student);
-        printf("TEST CASE 9\nУдаление сзади. Анна также покидает БД:\n");
+        printf("TEST CASE 9\nУдаление сзади. Анна такж  е покидает БД:\n");
         traverse(llist, print_student);
         printf("\n");
 
