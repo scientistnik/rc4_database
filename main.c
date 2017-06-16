@@ -12,6 +12,7 @@ typedef enum Actions {
 	ADD,
 	DELETE,
 	SAVE_IN_FILE,
+	LOAD_IN_FILE,
 	MENU
 } Actions_t;
 
@@ -34,6 +35,7 @@ void menu()
 	printf("\n%d. Добавить в базу",ADD);
 	printf("\n%d. Удалить из базы",DELETE);
 	printf("\n%d. Сохранить в файле",SAVE_IN_FILE);
+	printf("\n%d. Загрузить из файле",LOAD_IN_FILE);
 	printf("\n%d. Выход",EXIT);
 	printf("\nВаш выбор: ");
 }
@@ -181,8 +183,17 @@ void save_in_file()
 	char name[50];
 
 	printf("Введите название файла для сохранения: ");
-	scanf("%s",name);
+	scanf("%s",name); getchar();
 	save_list(name);
+}
+
+void load_in_file()
+{
+	char name[50];
+
+	printf("Введите название файла для загрузки: ");
+	scanf("%s",name); getchar();
+	list_init(fout,name);
 }
 
 int main(int argc, char **argv)
@@ -204,7 +215,7 @@ int main(int argc, char **argv)
 			}
 		}
 
-		list_init(fout);
+		list_init(fout,NULL);
 
     while(choice != EXIT)
     {
@@ -216,8 +227,9 @@ int main(int argc, char **argv)
             //test();
             break;
 				case VIEW: view_all(); break;
-				case DELETE:
 				case SAVE_IN_FILE: save_in_file(); break;
+				case LOAD_IN_FILE: load_in_file(); break;
+				case DELETE:
 				case VIEW_ONE: view_one(); break;
 				case FOUND: found(); break;
 				case ADD:	create_student();	break;

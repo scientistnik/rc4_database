@@ -9,19 +9,24 @@
 FILE *fout;
 Student_t *head = NULL;
 
-void list_init(FILE* output)
+void list_init(FILE* output,char *name)
 {
   FILE* f;
 
   fout = output;
 
+	if (name == NULL) {
+		name = malloc(sizeof(char)*50);
+		strcpy(name, DATABASE_NAME);
+	}
+
   fprintf(fout,"Try open database...\n");
-  if ( (f = fopen(DATABASE_NAME,"rb")) == NULL)
+  if ( (f = fopen(name,"rb")) == NULL)
   {
 		fprintf(fout,"Database not found!!!\n Create new database...\n");
-    f = fopen(DATABASE_NAME,"wb");
+    f = fopen(name,"wb");
     fclose(f);
-    f = fopen(DATABASE_NAME,"rb");
+    f = fopen(name,"rb");
   }
 
   Student_t *buf = malloc(sizeof(Student_t));
@@ -95,8 +100,10 @@ void save_list(char *name)
   FILE *f;
   Student_t *s = head;
 
-	if (name == NULL)
+	if (name == NULL) {
+		name = malloc(sizeof(char)*50);
 		strcpy(name,DATABASE_NAME);
+	}
 
   if ((f = fopen(name,"w")) == NULL) {
     fprintf(fout,"Error open database-file!\n");

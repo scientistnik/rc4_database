@@ -16,7 +16,7 @@ typedef struct Student {
 
 extern Student_t *head;
 
-void list_init(FILE*);
+void list_init(FILE*,char *name);
 void add_to_list(Student_t *new);
 void save_list(char *name);
 void delete_from_list(Student_t *del);
