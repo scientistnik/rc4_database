@@ -258,3 +258,69 @@ Student_t* find_by_house(char house, Student_t *h)
 
 	return cur;
 }
+
+void sort_list()
+{
+	int main[10] = {7,1,5,6,8,3,9,2,4,0};
+
+	for(int i = 0; i < 10; i++)
+		printf("%d ",main[i]);
+
+	printf("\n");
+	sort(main, 10);
+
+	for(int i = 0; i < 10; i++)
+		printf("%d ",main[i]);
+
+	exit(0);
+}
+
+void sort(int *m,int size)
+{
+	int a;
+
+	if (size <= 1)
+		return;
+	
+	if (m[0] > m[size-1]) {
+		int n = m[0];
+		m[0] = m[size-1];
+		m[size-1] = n;
+	}
+
+	a = size-1;
+	for (int i=1; i < a; i++) {
+		if (m[i] > m[a]) {
+			int n = m[i];
+			m[i] = m[a-1];
+			m[a-1] = m[a];
+			m[a] = n;
+			a--;
+			i--;
+		}
+	}
+
+	sort(m,a);
+	sort(m+a+1,size - a - 1);
+}
+
+void swap(Student_t *a, Student_t *b)
+{
+	if (a == b)
+		return;
+	
+	Student_t *buf;
+
+	buf = a->prev;
+	a->prev = b->prev;
+	a->prev->next = a;
+	b->prev = buf;
+	buf->next = b;
+
+	buf = a->next;
+	a->next = b->next;
+	a->next->prev = a;
+	b->next = buf;
+	buf->prev = b;
+
+}

@@ -27,5 +27,6 @@ Student_t* find_by_group(char *group, Student_t *h);
 Student_t* find_by_form(char form, Student_t *h);
 Student_t* find_by_money(char money, Student_t *h);
 Student_t* find_by_house(char house, Student_t *h);
+void sort_list(void);
 
 #endif

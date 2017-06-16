@@ -13,6 +13,7 @@ typedef enum Actions {
 	DELETE,
 	SAVE_IN_FILE,
 	LOAD_IN_FILE,
+	SORT_LIST,
 	MENU
 } Actions_t;
 
@@ -36,6 +37,7 @@ void menu()
 	printf("\n%d. Удалить из базы",DELETE);
 	printf("\n%d. Сохранить в файле",SAVE_IN_FILE);
 	printf("\n%d. Загрузить из файле",LOAD_IN_FILE);
+	printf("\n%d. Сортировать базу данных",SORT_LIST);
 	printf("\n%d. Выход",EXIT);
 	printf("\nВаш выбор: ");
 }
@@ -233,6 +235,7 @@ int main(int argc, char **argv)
 				case VIEW_ONE: view_one(); break;
 				case FOUND: found(); break;
 				case ADD:	create_student();	break;
+				case SORT_LIST: sort_list(); break;
         default: break;
         }
     }
