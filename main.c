@@ -92,6 +92,9 @@ void view_one()
 	Actions_t choice = MENU;
 	Student_t *c = head;
 
+	if (c == NULL)
+		return;
+
 	while(choice != EXIT) {
 		printf("\nFIO: \t\t%s\n",c->fio);
 		printf("Direct: \t\t%s\n",c->direct);
