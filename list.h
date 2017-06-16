@@ -18,7 +18,7 @@ extern Student_t *head;
 
 void list_init(FILE*);
 void add_to_list(Student_t *new);
-void save_list();
+void save_list(char *name);
 void delete_from_list(Student_t *del);
 int student_eq(const Student_t *a, const Student_t *b);
 Student_t* find_by_fio(char *fio, Student_t *h);

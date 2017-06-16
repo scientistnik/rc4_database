@@ -90,18 +90,22 @@ void delete_from_list(Student_t *del)
 	}
 }
 
-void save_list()
+void save_list(char *name)
 {
   FILE *f;
   Student_t *s = head;
 
-  if (head == NULL)
-    return;
+	if (name == NULL)
+		strcpy(name,DATABASE_NAME);
 
-  if ((f = fopen(DATABASE_NAME,"w")) == NULL) {
+  if ((f = fopen(name,"w")) == NULL) {
     fprintf(fout,"Error open database-file!\n");
     return;
   }
+
+  if (head == NULL)
+    return;
+
 	rc4_reset();
 	rc4_init();
 
